@@ -1,16 +1,17 @@
-
-
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Student {
     private String name;
+    private String branch;
     private Date dob;
 
-    public Student(String name, String dobStr) throws ParseException {
+    public Student(String name, String branch, String dobStr) throws ParseException {
         this.name = name;
+        this.branch = branch;
         this.dob = parseDate(dobStr);
     }
 
@@ -18,10 +19,12 @@ public class Student {
         String[] formats = {"dd-MM-yyyy", "yyyy-MM-dd"};
         for (String format : formats) {
             try {
-                return new SimpleDateFormat(format).parse(dobStr);
-            } catch (ParseException ignored) {}
+                return new SimpleDateFormat(format, Locale.ENGLISH).parse(dobStr);
+            } catch (ParseException ignored) {
+                // Try next format
+            }
         }
-        throw new ParseException("Invalid date format", 0);
+        throw new ParseException("Invalid date format. Supported formats: dd-MM-yyyy or yyyy-MM-dd", 0);
     }
 
     public void displayInfo() {
@@ -34,13 +37,17 @@ public class Student {
             age--;
         }
 
-        System.out.println("Name: " + name);
-        System.out.println("Age: " + age);
+        System.out.println("Student Information");
+        System.out.println("-------------------");
+        System.out.println("Name   : " + name);
+        System.out.println("Branch : " + branch);
+        System.out.println("DOB    : " + new SimpleDateFormat("dd-MM-yyyy").format(dob));
+        System.out.println("Age    : " + age + " years");
     }
 
     public static void main(String[] args) {
         try {
-            Student s = new Student("John Doe", "2000-04-15");
+            Student s = new Student("John Doe", "Computer Science", "15-04-2000");
             s.displayInfo();
         } catch (ParseException e) {
             System.out.println("Date parsing error: " + e.getMessage());
